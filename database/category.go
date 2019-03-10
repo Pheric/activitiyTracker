@@ -8,11 +8,12 @@ import (
 
 type Category struct {
 	tableName struct{}
-	Id int `sql:"type:SERIAL,pk"`
-	Name string `sql:",unique"`
+	Id        int    `sql:"type:SERIAL,pk"`
+	Name      string `sql:",unique"`
 }
 
 var categories []Category
+
 func GetCategories() []Category {
 	return categories
 }

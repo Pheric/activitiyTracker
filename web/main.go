@@ -9,7 +9,7 @@ import (
 func Init(port int, projectRoot string, errChan chan error) {
 	mux := http.NewServeMux()
 
-	mux.Handle("/", http.HandlerFunc(func (w http.ResponseWriter, r *http.Request) {
+	mux.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, fmt.Sprintf("%s/frontend/index.html", projectRoot))
 	}))
 

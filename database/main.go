@@ -12,9 +12,9 @@ var opts *pg.Options
 
 func Init(address, username, password, database string, port int, forceTblCreation bool, errChan chan error) {
 	log.Println("Setting up database..")
-	opts = &pg.Options {
-		Addr: fmt.Sprintf("%s:%d", address, port),
-		User: username,
+	opts = &pg.Options{
+		Addr:     fmt.Sprintf("%s:%d", address, port),
+		User:     username,
 		Password: password,
 		Database: database,
 	}
@@ -30,11 +30,12 @@ func Init(address, username, password, database string, port int, forceTblCreati
 func buildSchema(force bool, errChan chan error) {
 	tables := map[string]interface{}{
 		"category": (*Category)(nil),
+		"post":     (*Post)(nil),
 	}
 
 	wg := make(chan bool)
 	for tableName, table := range tables {
-		go func (tableName string, tbl interface{}, force bool, errChan chan error, wg chan bool) {
+		go func(tableName string, tbl interface{}, force bool, errChan chan error, wg chan bool) {
 			ok := true
 
 			conn := getConn()
@@ -51,7 +52,7 @@ func buildSchema(force bool, errChan chan error) {
 			if force {
 				err := conn.DropTable(tbl, &orm.DropTableOptions{
 					IfExists: false,
-					Cascade: true,
+					Cascade:  true,
 				})
 
 				if err != nil {
