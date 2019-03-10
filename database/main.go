@@ -21,6 +21,10 @@ func Init(address, username, password, database string, port int, forceTblCreati
 
 	log.Println("Building DB schema..")
 	buildSchema(forceTblCreation, errChan)
+
+	log.Println("Starting category ticker..")
+	initCategoryTicker(errChan) // we want to wait for the first sync
+	log.Printf("%d categories loaded", len(GetCategories()))
 }
 
 func buildSchema(force bool, errChan chan error) {
