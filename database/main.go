@@ -30,7 +30,6 @@ func Init(address, username, password, database string, port int, forceTblCreati
 func buildSchema(force bool, errChan chan error) {
 	tables := map[string]interface{}{
 		"category": (*Category)(nil),
-		"post":     (*Post)(nil),
 		"event":    (*Event)(nil),
 	}
 
