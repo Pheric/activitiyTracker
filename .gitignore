@@ -1,3 +1,4 @@
 *.elf
 notes.txt
 .idea/*
+*.sh
