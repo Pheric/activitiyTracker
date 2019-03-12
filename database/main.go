@@ -31,6 +31,7 @@ func buildSchema(force bool, errChan chan error) {
 	tables := map[string]interface{}{
 		"category": (*Category)(nil),
 		"post":     (*Post)(nil),
+		"event":    (*Event)(nil),
 	}
 
 	wg := make(chan bool)
@@ -51,7 +52,7 @@ func buildSchema(force bool, errChan chan error) {
 
 			if force {
 				err := conn.DropTable(tbl, &orm.DropTableOptions{
-					IfExists: false,
+					IfExists: true,
 					Cascade:  true,
 				})
 

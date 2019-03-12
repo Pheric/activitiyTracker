@@ -34,6 +34,18 @@ func fetchCategories() error {
 	return nil
 }
 
+func getCategoryById(id int) (error, Category) {
+	conn := getConn()
+	defer func() {
+		if err := conn.Close(); err != nil {
+			log.Printf("Error while fetching category %d: closing connection failed: %v\n", id, err)
+		}
+	}()
+
+	var cat Category
+	return conn.Model(&cat).Where("id = ?", id).Select(), cat
+}
+
 func initCategoryTicker(errChan chan error) {
 	fetch := func() {
 		if err := fetchCategories(); err != nil {
