@@ -24,9 +24,10 @@ func (e Event) GetCategory() (error, Category) {
 	return getCategoryById(e.CategoryId)
 }
 
+// Argument is the time to get events for. Current events should take the current time.
+// To look back in time at a given week, just change the argument to the day of interest.
 func GetCurrentEvents(t time.Time) (error, []Event) {
 	conn := getConn()
-	logDbQueries(conn) // TEMP
 
 	defer func() {
 		if err := conn.Close(); err != nil {
