@@ -32,7 +32,7 @@ func main() {
 	// initialize database
 	database.Init(dbAddr, dbUser, dbPass, dbName, dbPort, forceDbUpdate, errChan)
 	// initialize web server
-	go web.Init(webPort, ProjectRoot, errChan)
+	web.Init(ProjectRoot, webPort, errChan)
 
 	select {} // block
 }
