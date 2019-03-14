@@ -70,14 +70,31 @@ func _indexLoadFuncHelper(p *PageData, t time.Time) []byte {
 		log.Println(err)
 	}
 
+	// get only categories in use by the events
+	categorySet := map[database.Category]bool{}
+	for _, c := range database.GetCategories() {
+		for _, e := range events {
+			if e.CategoryId == c.Id {
+				categorySet[c] = true
+			}
+		}
+	}
+
+	categories := *new([]database.Category)
+	for k := range categorySet {
+		categories = append(categories, k)
+	}
+
 	buf := bytes.Buffer{}
 	if p.Template != nil {
 		err := p.Template.Execute(&buf, struct {
-			Events []database.Event
-			Date   time.Time
+			Events     []database.Event
+			Date       time.Time
+			Categories []database.Category
 		}{
 			events,
 			t,
+			categories,
 		})
 		if err != nil {
 			log.Printf("Error occurred while loading the index page:\n\t%v\n", err)
