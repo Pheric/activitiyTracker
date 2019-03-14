@@ -1,10 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="/stylesheets/index.css" />
     <meta charset="UTF-8">
     <title>Activity Tracker</title>
 </head>
 <body>
-    <h1>Hello, World!</h1>
+    <div class="flex-container-row flex-center">
+        <div>
+            <h1>Hello, World!</h1>
+            <h3>Events for {{ .Date.Format "Monday, Jan 2" }}</h3>
+
+            {{ if .Events }}
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Location</th>
+                        <th>Begins</th>
+                        <th>Ends</th>
+                        <th>Contact</th>
+                    </tr>
+                    {{ range .Events }}
+                        <tr>
+                            <td>{{ .Name }}</td>
+                            <td>{{ .Description }}</td>
+                            <td>{{ .Location }}</td>
+                            <td>{{ .PostDate.Format "Monday, Jan 2 at 15:04" }}</td>
+                            <td>{{ (.PostDate.Add .Duration).Format "Monday, Jan 2 at 15:04" }}</td>
+                            <td>{{ .Contact }}</td>
+                        </tr>
+                    {{ end }}
+                </table>
+            {{ else }}
+                <h2>No data</h2>
+            {{ end }}
+        </div>
+    </div>
 </body>
 </html>

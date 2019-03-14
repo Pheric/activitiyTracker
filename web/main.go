@@ -21,9 +21,8 @@ type PageData struct {
 	// for example, this would load data from the database into the page
 	LoadFunc func(*PageData)
 
-	Template   *template.Template // the template that will be sent to clients
-	StreamLock sync.Mutex         // to prevent simultaneous read and write of Stream
-	Stream     []byte             // the data actually sent to the client if static
+	Template *template.Template // the template that will be sent to clients
+	Stream   []byte             // the data actually sent to the client if static
 }
 
 var pages []*PageData
@@ -56,6 +55,10 @@ func Init(projectRoot string, port int, errChan chan error) {
 		}()
 	}
 	wg.Wait()
+
+	mux.Handle("/stylesheets/", http.StripPrefix("/stylesheets", http.FileServer(http.FileSystem(http.Dir(fmt.Sprintf("%s/frontend/stylesheets", projectRoot))))))
+	mux.Handle("/images/", http.StripPrefix("/images", http.FileServer(http.FileSystem(http.Dir(fmt.Sprintf("%s/frontend/images", projectRoot))))))
+	mux.Handle("/scripts/", http.StripPrefix("/scripts", http.FileServer(http.FileSystem(http.Dir(fmt.Sprintf("%s/frontend/scripts", projectRoot))))))
 
 	go func() {
 		log.Printf("Web server starting on port %d\n", port)
