@@ -1,8 +1,8 @@
 package main
 
 import (
-	"activitiyTracker/database"
-	"activitiyTracker/web"
+	"activityTracker/database"
+	"activityTracker/web"
 	"flag"
 	"fmt"
 	"log"

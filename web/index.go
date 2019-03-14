@@ -1,7 +1,7 @@
 package web
 
 import (
-	"activitiyTracker/database"
+	"activityTracker/database"
 	"bytes"
 	"html/template"
 	"log"
