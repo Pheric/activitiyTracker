@@ -22,3 +22,11 @@ html, body {
     justify-content: center;
     align-items: center;
 }
+
+.nav ul {
+    list-style: none;
+}
+.nav ul > li {
+    display: inline-block;
+    margin: 0 5%;
+}

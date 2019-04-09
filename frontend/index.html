@@ -4,38 +4,130 @@
     <link rel="stylesheet" href="/stylesheets/index.css" />
     <meta charset="UTF-8">
     <title>Activity Tracker</title>
+    <script>
+        {{ if and .Events .Categories }}
+
+        let events = [
+            {{ range .Events }}
+            {
+                'name' : '{{ .Name }}',
+                'description' : '{{ .Description }}',
+                'category' : '{{ .CategoryId }}',
+                'location' : '{{ .Location }}',
+                'begins' : '{{ .Begins.Format "Monday, Jan 2 at 15:04" }}',
+                'duration' : '{{ .Duration }}',
+                'contact' : '{{ .Contact }}'
+            },
+            {{ end }}
+        ];
+
+        let categories = [
+            {{ range .Categories }}
+            {
+                'id' : '{{ .Id }}',
+                'name' : '{{ .Name }}'
+            },
+            {{ end }}
+        ];
+
+        let catFilters = [
+            {{ range .Categories }}
+                '{{ .Id }}',
+            {{ end }}
+        ];
+
+
+        // main function used to populate the page with information
+        function buildPage() {
+            printCategories();
+            printEvents();
+        }
+
+        function printCategories() {
+            for (let i = 0; i < categories.length; i++) {
+                let ul = document.getElementById('catList');
+
+                let li = document.createElement('li');
+                li.appendChild(document.createTextNode(categories[i].name));
+                li.onclick = function () {
+                    toggleFilter(this);
+                };
+
+                ul.appendChild(li);
+            }
+        }
+
+        let eventsBody = null;
+        function printEvents() {
+            let tbl = document.getElementById('events');
+            let body = document.createElement('tbody');
+            body.id = 'events-body';
+
+            for (let i = 0; i < events.length; i++) {
+                let event = events[i];
+                if (!catFilters.includes(event.category)) continue;
+
+                let tr = document.createElement('tr');
+                for (let field in event) {
+                    let td = document.createElement('td');
+                    td.innerText = event[field];
+                    tr.appendChild(td);
+                }
+
+                body.appendChild(tr);
+            }
+
+            if (eventsBody != null)
+                tbl.removeChild(eventsBody);
+            tbl.appendChild(body);
+
+            eventsBody = body;
+        }
+
+        function toggleFilter(elem) {
+            let cId = -1;
+            for (let i = 0; i < categories.length; i++) {
+                let c = categories[i];
+                if (c.name === elem.innerText)
+                    cId = c.id;
+            }
+            if (cId === -1) return;
+
+            if (catFilters.includes(cId)) {
+                catFilters.splice(catFilters.indexOf(cId), 1);
+            } else {
+                catFilters.push(cId);
+            }
+
+            //console.log(catFilters);
+            printEvents();
+        }
+
+        {{ end }}
+    </script>
 </head>
-<body>
+<body onload="buildPage()">
     <div class="flex-container-row flex-center">
         <div>
             <h1>Hello, World!</h1>
             <h3>Events for {{ .Date.Format "Monday, Jan 2" }}</h3>
 
             {{ if and .Events .Categories }}
-                <table>
-                    <tr>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Location</th>
-                        <th>Begins</th>
-                        <th>Ends</th>
-                        <th>Contact</th>
-                    </tr>
-                    {{ range $c := .Categories }}
-                        <tr><th>{{ $c.Name }}</th></tr>
-                        {{ range $.Events }}
-                            {{ if eq .CategoryId $c.Id }}
-                                <tr>
-                                    <td>{{ .Name }}</td>
-                                    <td>{{ .Description }}</td>
-                                    <td>{{ .Location }}</td>
-                                    <td>{{ .Begins.Format "Monday, Jan 2 at 15:04" }}</td>
-                                    <td>{{ (.Begins.Add .Duration).Format "Monday, Jan 2 at 15:04" }}</td>
-                                    <td>{{ .Contact }}</td>
-                                </tr>
-                            {{ end }}
-                        {{ end }}
-                    {{ end }}
+                <ul id="catList">
+
+                </ul>
+                <table id="events">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Category</th>
+                            <th>Location</th>
+                            <th>Begins</th>
+                            <th>Ends</th>
+                            <th>Contact</th>
+                        </tr>
+                    </thead>
                 </table>
             {{ else }}
                 <h2>No data</h2>
