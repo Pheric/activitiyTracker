@@ -39,8 +39,19 @@
 
         // main function used to populate the page with information
         function buildPage() {
+            colorCategories();
             printCategories();
             printEvents();
+        }
+
+        function colorCategories() {
+            for (let i = 0; i < categories.length; i++) {
+                categories[i]['color'] = [
+                    Math.floor(Math.random() * Math.floor(230)),
+                    Math.floor(Math.random() * Math.floor(230)),
+                    Math.floor(Math.random() * Math.floor(230))
+                ]
+            }
         }
 
         function printCategories() {
@@ -49,6 +60,7 @@
 
                 let li = document.createElement('li');
                 li.appendChild(document.createTextNode(categories[i].name));
+                li.style.color = 'rgb(' + categories[i]['color'][0] + ',' + categories[i]['color'][1] + ',' + categories[i]['color'][2] + ')';
                 li.onclick = function () {
                     toggleFilter(this);
                 };
@@ -66,11 +78,20 @@
             for (let i = 0; i < events.length; i++) {
                 let event = events[i];
                 if (!catFilters.includes(event.category)) continue;
+                let cat = null;
+                for (let j = 0; j < categories.length; j++) {
+                    if (categories[j].id === event.category) {
+                        cat = categories[j];
+                        break;
+                    }
+                }
+                let rgb = cat.color;
 
                 let tr = document.createElement('tr');
                 for (let field in event) {
                     let td = document.createElement('td');
                     td.innerText = event[field];
+                    td.style.color = 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
                     tr.appendChild(td);
                 }
 
